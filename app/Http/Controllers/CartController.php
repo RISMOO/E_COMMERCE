@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Coupon;
 use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -63,6 +64,29 @@ class CartController extends Controller
 
     }
 
+    //////COUPON//////////////////
+public function storeCoupon(Request $request)
+
+{
+
+    $code=$request->get('code');//on stocke la requete//code= name du formulaire
+
+    $coupon=Coupon::where('code',$code)->first(); //je re'cupere le code ou le code est egal au code que lon a entrer code et on ^rend le 1er enregistrement
+    //On recupere notre coupon dans notre base de données
+
+    if(!$coupon){//si on a pâs le coupons dans notre base de données
+      return redirect()->back()->with('error','Le coupon est invalide');
+
+    }
+
+//SI LE COUPON EST VALIDE
+    $request->session()->put('coupon',[//notre reqete appelle notre session qui aura comme clé coupon et comme valeur le tableau
+     'code'=>$coupon->code,//code aura la valeur de coupon->code//cle name
+     'remise'=>$coupon->discount(Cart::subtotal())//la methode discount je la creee dans mon model coupon
+    ]);
+    return redirect()->back()->with('success','Le coupon est apppliqué');
+}
+
 
     /**
      * Display the specified resource.
@@ -105,11 +129,22 @@ class CartController extends Controller
 
         if($validator->fails()){
 
-            Session::flash('danger','La quantité ne dois pas dépasser 6');
+            Session::flash('error','La quantité doit etre comprise entre 1 et 6');
 
-            return response()->json(['error'=>'Cart Quantity Has NotbBeen Updated']);
+            return response()->json(['error'=>'Cart Quantity Has Not bBeen Updated']);
 
         }
+
+        if($data['qty'] > $data['stock']){
+
+            Session::flash('error','La quantité de ce produit n\'est pas disponible.');
+
+            return response()->json(['error'=>'Produit Quantity not Available']);
+
+        }
+
+
+
         Cart::update($rowId, $data['qty']);//mise a jour du select
 
         Session::flash('success','La quantité a été modifié a ' . $data['qty'] . '.');
@@ -127,5 +162,16 @@ class CartController extends Controller
     {
         Cart::remove($rowId);
         return back()->with('success','Le produit a été supprimé');
+    }
+
+    public function destroyCoupon()
+
+
+
+    {
+     request()->session()->forget('coupon');
+
+     return redirect()->back()->with('success','Le coupon a été retiré');
+
     }
 }

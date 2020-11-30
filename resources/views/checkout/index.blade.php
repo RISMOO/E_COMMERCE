@@ -26,7 +26,8 @@
             <!-- We'll put the error messages in this element -->
             <div id="card-errors" role="alert"></div>
 
-            <button class="btn btn-success mt-4" id="submit"><i class="far fa-credit-card"></i> Régler maintenant<span class="text-dark font-weight-bold"> ( {{getPrice2(Cart::total())}} € )</span></button>
+            <button class="btn btn-success mt-4" id="submit"><i class="far fa-credit-card"></i> Régler maintenant<span class="text-dark font-weight-bold"> ( {{getPrice2($total)}} € )</span></button>
+                                                                                                                                                         <!--$total controller checkout-->
           </form>
 
 
@@ -41,7 +42,7 @@
 
 <script>//SCRIPT.JS STRIPE
 document.getElementsByClassName('blog-header')[0].classList.add("d-none");
-    document.getElementsByClassName('nav-scroller')[0].classList.add("d-none");
+ document.getElementsByClassName('nav-scroller')[0].classList.add("d-none");
 
 var stripe = Stripe('pk_test_51HqC2FAWXp5BVHyztMXvFIk43OLNcZ4AeP5tn3hvci8Iv452cCk9LwxJUDRuhwttaUJfO1394bernZWfLUe4yPwb00SdqFfuTe');
 var elements = stripe.elements();
@@ -103,7 +104,7 @@ button.addEventListener('click', function(ev) {
        //on recupere le contenu du token
       var form=document.getElementById('payment-form');//on recupere lid de notre formulaire
       var url=form.action;//on recuoere lurl de l'action de notre formulaire
-      var redirect='/merci';
+
 
 //////////////////REQUETE AJAX///////////////////////////////
                        fetch(
@@ -128,9 +129,14 @@ button.addEventListener('click', function(ev) {
 
                                //si on a un retour positif fonction data
                        ).then((data)=>{
-                           console.log(data);
-                           form.reset();
-                         window.location.href = redirect;
+                           if(data.status == 400){//si un produit nest plus dispo dans le panier mesage errors
+                            var redirect='/boutique';
+                           }else{
+                            var redirect='/merci';
+                           }
+                          // console.log(data);
+                          // form.reset();
+                         window.location.href = redirect;//si tous c'est bien passe rediection remerciement
                        }).catch((error)=> {
 
                         console.log(error)

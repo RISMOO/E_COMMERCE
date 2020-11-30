@@ -40,9 +40,9 @@
       <div id="app">
     <div class="container">
 
-    @auth
 
-@endauth
+
+
   <header class="blog-header py-3">
     <div class="row flex-nowrap justify-content-between align-items-center">
       <div class="col-4 pt-1">
@@ -56,11 +56,14 @@
       </div>
       <div class="col-4 d-flex justify-content-end align-items-center">
        @include('partials.search')
+
+
        @include('partials.auth')
 
       </div>
     </div>
   </header>
+
 
   <div class="nav-scroller py-1 mb-2">
     <nav class="nav d-flex justify-content-between">
@@ -106,9 +109,9 @@
   </div>
 </div>
 
-      </div>
+
 <footer class="blog-footer">
-  <p>E-commerce<i class="fas fa-shopping-cart"></i> <a href="https://rismo.fr/"> rismo.fr</a> by rismo</a>.</p>
+  <p>E-commerce<i class="fas fa-shopping-cart"></i> <a href="https://rismo.fr/"><img src="{{asset('img/logo.jpg')}}"width="40" height="40" ></a> by rismo</a>.</p>
   <p>
     <a href="#">Revenir en haut</a>
   </p>
@@ -116,6 +119,6 @@
 
 @yield('extra-js')<!--js- stripe-->
 </div>
-
+</div>
 </body>
 </html>

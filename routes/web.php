@@ -27,8 +27,15 @@ Route::group(['middleware' => ['auth']], function () {
  Route::get('/panier','CartController@index')->name('cart.index');
  Route::post('/panier/ajouter','CartController@store')->name('cart.store');
  Route::delete('/panier/{rowId}','CartController@destroy')->name('cart.destroy');
+
+ ///////////////////////ROUTES COUPON//////////////////////////////
+ Route::post('/coupon','CartController@storeCoupon')->name('cart.store.coupon');
+ Route::delete('/coupon','CartController@destroyCoupon')->name('cart.destroy.coupon');
+
+
  /////////////////////////////ROUTE AJOUT QUANTITE PANIER/////////////////////
  Route::put('/panier/{rowId}','CartController@update')->name('cart.update');
+
 });
 
 Route::group(['middleware' => ['auth']], function () {

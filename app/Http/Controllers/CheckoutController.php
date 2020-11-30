@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use DateTime;
 use App\Order;
+use App\Coupon;
+use App\Product;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 use Illuminate\Support\Arr;
@@ -30,16 +32,28 @@ class CheckoutController extends Controller
 
         \Stripe\Stripe::setApiKey('sk_test_51HqC2FAWXp5BVHyzBrasAaSqDOlS1VxFeHZU9HQXoVok3HlY830MfhrZBrIRvS8HqxKlXzPYZw0fVPAoAqOkTA4z00zlUAN8LM');
 
+
+        if(request()->session()->has('coupon')){//si dans notre session on a un coupon nouveau total
+       $total= (Cart::subtotal() - request()->session()->get('coupon')['remise'] + (Cart::subtotal() - request()->session()->get('coupon')['remise']) * (config('cart.tax') /100));
+
+        }else{
+
+            $total=Cart::total();
+        }
           $intent = \Stripe\PaymentIntent::create([
-            'amount' =>round (Cart::total()),//montant valeur décimale,on arrondi avec round()
+            'amount' =>round ($total),//montant valeur décimale,on arrondi avec round()
             'currency' => 'eur',
 
 
            'metadata' => ['integration_check' => 'accept_a_payment'],
           ]);
          $clientSecret=Arr::get($intent, 'client_secret');//Arr est un helper de tableau qui va nous retourner la clé secrete
-        return view ('checkout.index')->with('clientSecret',$clientSecret);
+        return view ('checkout.index', [
+            'clientSecret'=>$clientSecret,
+            'total'=>$total//sera egal avec ou sans remise 
 
+
+        ]);
     }
 
     /**
@@ -60,8 +74,18 @@ class CheckoutController extends Controller
      */
     public function store(Request $request)
     {
-         
-        $data = $request->json()->all();
+          //on verfie en 1ere si le produit est disponible
+
+        if( $this->checkIfNotAvailable()){//fonction CheCk //csi notre produit n'est plus disponible
+             //si la focntion renvoi true
+             Session::flash('error', 'Un produit dans votre panier n\'est plus disponible ');
+             return response()->json(['success'=>false], 400);//status 400
+        }
+
+
+
+
+        $data = $request->json()->all();//requete ajax checkout.index stripe
 
         $order = new Order();
 
@@ -86,8 +110,10 @@ class CheckoutController extends Controller
         $order->user_id = auth()->user()->id;//lutilisateur connecté
         $order->save();
 
-        if ($data['paymentIntent']['status'] === 'succeeded') {
+        if ($data['paymentIntent']['status'] === 'succeeded') {//si le paiement c'est bien passé on decremente le produit avant de supprmier le panier
+            $this->updateStock();//on appelle la fonction updateStock()
             Cart::destroy();
+
             Session::flash('success', 'Votre commande a été traitée avec succès.');
             return response()->json(['success' => 'Payment Intent Succeeded']);
         } else {
@@ -145,6 +171,47 @@ class CheckoutController extends Controller
      */
     public function destroy($id)
     {
-        //
+
     }
+
+
+    private function checkIfNotAvailable (){
+        foreach (Cart::content() as $itemPanier) {
+            $product=Product::find($itemPanier->model->id);//on recupere l'item correspondant a lid
+
+
+         if($product->stock < $itemPanier->qty) {  //si  on a un stock inferieur a la quantité que lon aura selctionne dans notre panier
+
+            return true;//si il renvoie true le produit n'est plus disponible en base de données
+         }
+        }
+
+  return false;
+    }
+
+    //une fonction private quyi sera appeler  seulement dans notre class checkout
+    private function updateStock()//mise ajour du stock
+    {
+    //on va boucler sur nore panier et a chaque fois on va recuperter le produit de notre panier et le soustraire la quantité  a notre stock
+
+     foreach (Cart::content() as $itemPanier) {
+         $product=Product::find($itemPanier->model->id);//on recupere l'item correspondant a lid
+
+         $product->update(['stock'=>$product->stock - $itemPanier->qty]);//on met a jour la collone stock
+         //on pense a rajhouter un fillable dans notre model product.php
+
+
+     }
+
+
+
+    }
+
+    public function destroyCoupon()
+    {
+       $coupon=Coupon::remove();
+
+    }
+
+
 }

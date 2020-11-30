@@ -33,10 +33,15 @@ class ProductController extends Controller
         public function show($slug){
 
             $product=Product::where('slug', $slug)->first();
+               //GESTION DES STOCKS
+            $stock=$product->stock== 0 ? 'Produit indisponible' : 'Produit disponible';
 
 
+            return view ('products.show',[
+             'product'=>$product,
+             'stock' =>$stock
 
-            return view ('products.show')->with('product',$product);
+            ]);
         }
 
 
