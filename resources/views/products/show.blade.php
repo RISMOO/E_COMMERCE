@@ -4,14 +4,18 @@
   <div class="col-md-12">
     <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-400 position-relative">
       <div class="col p-4 d-flex flex-column position-static">
-        <muted class="d-inline-block mb-2 text-success">
-            <div class="badge badge-pill badge-info">{{$stock}}</div>
+        <muted class="d-inline-block mb-2 text-primary">
+
         @foreach ($product->categories as $category)
             {{ $category->name }}{{ $loop->last ? '' : ', '}}
         @endforeach
         </muted>
-        <h5 class="mb-0">{{ $product->title }}</h5>
-         <hr>
+        <h5 class="mb-3">{{ $product->title }}
+            <div class="badge badge-pill text-success badge-light">{{$stock}}</div>
+
+        </h5>
+
+
            <p class="mb-auto text-muted">{!! $product->description !!}</p><!--prend en charge le html-->
             <strong class="mb-auto font-weight-normal text-secondary font-size-16"><h2>{{ $product->getPrice()}}€ </h2></strong>
             @if($stock=="Produit disponible")
@@ -19,7 +23,7 @@
               <form action="{{ route('cart.store') }}" method="POST">
            @csrf
             <input type="hidden" name="product_id" value="{{ $product->id }}">
-          <button type="submit" class="btn btn-dark ">Ajouter au panier</button>
+          <button type="submit" class="btn btn-light "><img src="{{asset('img/caddie.png')}}" alt="A 50x50 image"> Ajouter au panier</button>
         </form>
         @endif
       </div>

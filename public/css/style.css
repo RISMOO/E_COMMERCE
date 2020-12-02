@@ -138,3 +138,38 @@ span
 
 font-size: 20px;
 }
+
+.boutton
+
+{
+ background: black;
+
+}
+
+.caca
+
+{
+margin-left: auto;
+
+}
+
+.item-slick1
+
+{
+
+    height: 100vh;
+}
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #93dc34;
+    border-color: #a2e701;
+  }
+
+  a
+
+
+  {
+
+    color: #508a04;
+  }

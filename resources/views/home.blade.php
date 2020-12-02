@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">Mes commandes</div>
+                <div class="card-header">Bonjour <h2 class="text-success text-capitalize">{{Auth::user()->name}}</h2>Historique de vos commandes</div>
 
                 <div class="card-body">
                     @if (session('status'))
@@ -17,7 +17,7 @@
                               <div class="card">
                                   <div class="card-header">
                                      Commande passée le {{ Carbon\Carbon::parse($order->payment_created_at)->format('d/m/Y à H:i')}}
-                                     d'un montant de <strong>{{getPrice2($order->amount)}} €</strong> <!--carbon herite de la class datetime-->
+                                     d'un montant de <strong class="text-success">{{getPrice2($order->amount)}} €</strong> <!--carbon herite de la class datetime-->
 
                                   </div>
 

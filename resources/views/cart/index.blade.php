@@ -1,17 +1,10 @@
 @extends('layouts.master')
 
-
-
-
-
 @section('extra-meta')
 <meta name="csrf-token" content="{{ csrf_token() }}">
 @endsection
 
-
 @section('content')
-
-
 
 @if (Cart::count() > 0)
 <div class="px-4 px-lg-0">
@@ -43,35 +36,29 @@
                 <tbody>
 @foreach (Cart::content() as $product)
 <tr>
-
     <th scope="row" class="border-0">
       <div class="p-2">
-
         <div class="ml-3 d-inline-block align-middle">
             <img src="{{asset('storage/'. $product->model->image)}}" alt="" width="70" class="img-fluid rounded shadow-sm">
          <h5 class="mb-0"> <a href="{{ route('products.show', $product->model->slug) }}" class="text-dark d-inline-block align-middle">{{$product->model->title}}</a></h5>
-
-        </div>
+        <div>
       </div>
     </th>
-<td class="border-0 align-middle"><strong>{{getPrice2($product->subtotal())}}</strong></td>
-<td class="border-0 align-middle">
-<select name="qty" id="qty" data-id="{{$product->rowId}}" data-stock="{{$product->model->stock}}" class="custom-select"><!--data-id=rowId/REQUETE AJAX correspond au produit enregistré dans notre panier-->
+     <td class="border-0 align-middle"><strong>{{getPrice2($product->subtotal())}}</strong></td>
+       <td class="border-0 align-middle">
+          <select name="qty" id="qty" data-id="{{$product->rowId}}" data-stock="{{$product->model->stock}}" class="custom-select"><!--data-id=rowId/REQUETE AJAX correspond au produit enregistré dans notre panier-->
         <!--data-stock-/REQUETE AJAX-->
      @for( $i = 1 ; $i <=6; $i++)
      <option value="{{  $i }}" {{ $i == $product->qty ? 'selected': '' }} >
         {{$i}}</option>
      @endfor
-
     </select>
-</td>
+  </td>
     <td class="border-0 align-middle">
-
-
 <form action="{{route('cart.destroy',$product->rowId)}}" method="POST">
 @csrf
 @method('DELETE')
-<button type="submit" class="text-white"><i class="fa fa-trash "></i></button>
+<button type="submit" class="btn btn-sm btn-outline-danger ml-3"><img src="{{asset('img/drop.png')}}" alt="A 50x50 image"> </button>
 
 </form>
 
@@ -87,7 +74,8 @@
         </div>
         <div class="row py-5 p-4 bg-white rounded shadow-sm">
           <div class="col-lg-6">
-            <div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold">Code coupon</div>
+            <div class="bg-light rounded-pill px-4 py-3 text-uppercase font-weight-bold"><img src="{{asset('img/coupon.png')}}" width="25" height="25" alt="A 50x50 image"> Code coupon</div>
+
            @if(!request()->session()->has('coupon'))<!--si dans la requete j'ai une session qui a un coupon-->
            <!--son la session n'as pas de coupon-->
            <div class="p-4">
@@ -97,7 +85,7 @@
                 @csrf
                 <input type="text" placeholder="Entrez votre code ici" name="code" aria-describedby="button-addon3" class="form-control border-0">
                 <div class="input-group-append border-0">
-                  <button id="button-addon3" type="submit" class="btn btn-dark px-4 rounded-pill"><i class="fa fa-gift mr-2"></i>Apply coupon</button>
+                  <button id="button-addon3" type="submit" class="btn btn-success px-4 rounded-pill"><i class="fa fa-gift mr-2"></i>Apply coupon</button>
                 </div>
               </div>
                </form>
@@ -131,7 +119,7 @@
         <form action="{{route('cart.destroy.coupon')}}" method="POST" class="d-inline-block">
         @csrf
         @method('DELETE')<!--on supprime notre coupon-->
-        <button type="submit" class="btn btn-sm btn-outline-danger ml-3"><i class="fa fa-trash"></i></button>
+        <button type="submit" class="btn btn-sm btn-outline-danger ml-3"><img src="{{asset('img/drop.png')}}" alt="A 50x50 image"> </button>
 
         </form>
             <!--la cle code--></strong><strong><span class="text-success">{{getPrice2(request()->session()->get('coupon')['remise'])}}</span> €</strong></li>
@@ -152,7 +140,7 @@
                  <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Total</strong> <h5 class="font-weight-bold total">{{ getPrice2(Cart::total())}} €</h5></li>
 
                 @endif
-              </ul><a href="{{route('checkout.index')}}" class="btn btn-info rounded-pill py-2 btn-block">Proceder au paiement</a>
+              </ul><a href="{{route('checkout.index')}}" class="btn btn-success rounded-pill py-2 btn-block" ><img src="{{asset('img/pay.png')}}">Proceder au paiement<img src="{{asset('img/pay.png')}}"> </a>
 
               <!--stripe.com -->
               <!-- composer require stripe/stripe-php installation de strippe-->
@@ -169,8 +157,10 @@
 @else
 <div class="col-md-12">
     <div class="jumbotron text-center">
+
+       <h2 class="text-muted"> Bonjour</h2>  <h3 class="text-success text-capitalize"> {{Auth::user()->name}}</h3>
     <h2 class="text-muted">Votre panier est vide</h2>
-<p class="mt-4">Mais vous pouvez visiter la <a href="{{route('products.index')}}"><img src="{{asset('img/shop.png')}}" width="30" height="30" alt="A 50x50 image">Boutique</a>
+<p class="mt-4">Mais vous pouvez visiter la <a href="{{route('products.index')}}"><img src="{{asset('img/home.png')}}" width="30" height="30" alt="A 50x50 image"></a>
 </p>
     </div>
 </div>

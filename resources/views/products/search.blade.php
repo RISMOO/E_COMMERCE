@@ -4,7 +4,7 @@
 
 
   @foreach ($products as $product)
-    <div class="col-md-6">
+    <div class="col-md-12">
       <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
         <div class="col p-4 d-flex flex-column position-static">
         <small class="d-inline-block mb-2 text-success">

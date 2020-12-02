@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" type="image/x-icon" href="{{asset('img/shop.png')}}" />
+    <link rel="icon" type="image/x-icon" href="{{asset('img/caddie.png')}}" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Application E-commerce en Laravel par rismo">
     <meta name="author" content="Rismo">
@@ -19,6 +19,11 @@
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
+
+
+    <link rel="stylesheet" type="text/css" href="{{asset('fonts/font-awesome-4.7.0/css/font-awesome.min.css')}}">
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" href="{{asset('fonts/iconic/css/material-design-iconic-font.min.css')}}">
     <!-- Favicons -->
 <link rel="apple-touch-icon" href="/docs/4.5/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
 <link rel="icon" href="/docs/4.5/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
@@ -38,29 +43,34 @@
   </head>
   <body>
       <div id="app">
+
     <div class="container">
 
 
-
-
   <header class="blog-header py-3">
+
     <div class="row flex-nowrap justify-content-between align-items-center">
+
+
       <div class="col-4 pt-1">
-      <a class="text-muted" href="{{route('cart.index')}}"><i class="fas fa-shopping-cart"></i> Panier <span class="badge badge-pill badge-danger">{{Cart::count()}} </span></a>
+
+      <a class="text-muted" href="{{route('cart.index')}}"><img src="{{asset('img/caddie.png')}}"  alt="A 50x50 image"> <span class="badge badge-pill badge-danger">{{Cart::count()}} </span></a>
       </div>
+
       <div class="col-4 text-center">
 
 
-        <a class="blog-header-logo text-dark" href="{{route('products.index')}}"><img src="{{asset('img/shop.png')}}" width="35" height="35" alt="A 50x50 image">Shop</a>
+        <a class="blog-header-logo text-dark" href="{{route('products.index')}}">E.commerce</a>
 
       </div>
-      <div class="col-4 d-flex justify-content-end align-items-center">
+      <div class="col-4 d-flex justify-content-around align-items-center">
        @include('partials.search')
 
 
        @include('partials.auth')
 
       </div>
+
     </div>
   </header>
 
@@ -73,6 +83,8 @@
     <a class="p-2 text-muted" href="{{route('products.index',['categorie'=>$category->slug])}}">{{$category->name}}</a><!--la route avec une key dsans lurl slug-->
 
       @endforeach
+
+
     </nav>
   </div>
 @if (session('success'))<!-- si la session contient un message -->
@@ -111,14 +123,16 @@
 
 
 <footer class="blog-footer">
-  <p>E-commerce<i class="fas fa-shopping-cart"></i> <a href="https://rismo.fr/"><img src="{{asset('img/logo.jpg')}}"width="40" height="40" ></a> by rismo</a>.</p>
-  <p>
+
+   <a href="https://rismo.fr/"> <img src="{{asset('img/logo-rismo2.png')}}" width="200" height="200" ></a><br>
+
     <a href="#">Revenir en haut</a>
-  </p>
+
 </footer>
 
 @yield('extra-js')<!--js- stripe-->
 </div>
 </div>
+
 </body>
 </html>
